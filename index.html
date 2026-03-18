@@ -1,0 +1,1368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Higher Ed SaaS Industry Map</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0f11;
+    --surface: #161719;
+    --surface2: #1e2024;
+    --border: rgba(255,255,255,0.07);
+    --border-bright: rgba(255,255,255,0.15);
+    --text: #e8e6e0;
+    --muted: #7a7870;
+    --accent: #c8b97a;
+    --accent2: #7ab8c8;
+    --acadea: #b8d4a0;
+
+    --cat-curriculum: #c8b97a;
+    --cat-assessment: #c89a7a;
+    --cat-scheduling: #7ac8b9;
+    --cat-sis: #7a9bc8;
+    --cat-lms: #b07ac8;
+    --cat-program: #c87a9a;
+
+    --mature: #7a9bc8;
+    --consolidating: #c8b97a;
+    --emerging: #7ac8b9;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Instrument Sans', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Grain overlay */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 999;
+    opacity: 0.4;
+  }
+
+  header {
+    padding: 48px 56px 32px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+  }
+
+  .header-left h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 2.4rem;
+    color: var(--text);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .header-left h1 em {
+    color: var(--accent);
+    font-style: italic;
+  }
+
+  .header-sub {
+    margin-top: 8px;
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.04em;
+  }
+
+  .legend {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    align-items: flex-end;
+  }
+
+  .legend-title {
+    font-size: 0.7rem;
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 2px;
+  }
+
+  .legend-row {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+
+  .legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Journey bar */
+  .journey-bar {
+    display: flex;
+    align-items: stretch;
+    margin: 0 56px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    margin-top: 28px;
+  }
+
+  .journey-label {
+    background: var(--surface);
+    padding: 10px 18px;
+    font-size: 0.7rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    border-right: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .journey-steps {
+    display: flex;
+    flex: 1;
+  }
+
+  .journey-step {
+    flex: 1;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    border-right: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s, border-color 0.2s;
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+  }
+
+  .journey-step:last-child { border-right: none; }
+
+  .journey-step:hover {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  .journey-step.active {
+    background: var(--surface2);
+    border-bottom: 2px solid var(--accent);
+  }
+
+  .journey-step.active .step-name {
+    color: var(--accent);
+  }
+
+  .journey-step.active .step-icon {
+    filter: none;
+  }
+
+  .journey-step .step-icon {
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  .journey-step .step-text {
+    line-height: 1.3;
+  }
+
+  .journey-step .step-name {
+    font-weight: 600;
+    font-size: 0.75rem;
+    color: var(--text);
+  }
+
+  .journey-step .step-desc {
+    font-size: 0.68rem;
+    color: var(--muted);
+  }
+
+  /* Main grid */
+  .main {
+    padding: 28px 56px 56px;
+  }
+
+  .section-label {
+    font-size: 0.68rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  /* Integration note */
+  .integration-note {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent2);
+    border-radius: 6px;
+    padding: 12px 18px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-bottom: 28px;
+    line-height: 1.6;
+  }
+
+  .integration-note strong {
+    color: var(--accent2);
+    font-weight: 600;
+  }
+
+  /* Category cards */
+  .categories-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+
+  .cat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    transition: border-color 0.2s, transform 0.15s, opacity 0.25s;
+    position: relative;
+  }
+
+  .cat-card.dimmed {
+    opacity: 0.2;
+    transform: none;
+    pointer-events: none;
+  }
+
+  .cat-card.highlighted {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 1px var(--accent);
+  }
+
+  .cat-card:hover {
+    border-color: var(--border-bright);
+    transform: translateY(-1px);
+  }
+
+  .cat-header {
+    padding: 16px 18px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  .cat-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.15rem;
+    line-height: 1.2;
+  }
+
+  .cat-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 4px;
+    flex-shrink: 0;
+  }
+
+  .maturity-badge {
+    font-size: 0.62rem;
+    font-family: 'DM Mono', monospace;
+    padding: 2px 7px;
+    border-radius: 3px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .maturity-mature {
+    background: rgba(122, 155, 200, 0.15);
+    color: var(--mature);
+    border: 1px solid rgba(122, 155, 200, 0.25);
+  }
+
+  .maturity-consolidating {
+    background: rgba(200, 185, 122, 0.15);
+    color: var(--consolidating);
+    border: 1px solid rgba(200, 185, 122, 0.25);
+  }
+
+  .maturity-emerging {
+    background: rgba(122, 200, 185, 0.15);
+    color: var(--emerging);
+    border: 1px solid rgba(122, 200, 185, 0.25);
+  }
+
+  .cat-desc {
+    padding: 10px 18px 14px;
+    font-size: 0.76rem;
+    color: var(--muted);
+    line-height: 1.5;
+    border-bottom: 1px solid var(--border);
+  }
+
+  /* Vendor list */
+  .vendor-list {
+    padding: 8px 0;
+  }
+
+  .vendor-item {
+    padding: 9px 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    cursor: pointer;
+    transition: background 0.15s;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+
+  .vendor-item:last-child { border-bottom: none; }
+
+  .vendor-item:hover {
+    background: var(--surface2);
+  }
+
+  .vendor-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .vendor-color-bar {
+    width: 3px;
+    height: 28px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .vendor-name-wrap {}
+
+  .vendor-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text);
+    line-height: 1.2;
+  }
+
+  .vendor-tagline {
+    font-size: 0.7rem;
+    color: var(--muted);
+    margin-top: 1px;
+  }
+
+  .vendor-tags {
+    display: flex;
+    gap: 4px;
+  }
+
+  .vtag {
+    font-size: 0.6rem;
+    padding: 1px 5px;
+    border-radius: 3px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    white-space: nowrap;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .vtag.highlight {
+    background: rgba(184, 212, 160, 0.12);
+    border-color: rgba(184, 212, 160, 0.25);
+    color: var(--acadea);
+  }
+
+  /* Acadea competitor indicator */
+  .competitor-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+
+  .vendor-item:hover .competitor-dot { opacity: 1; }
+  .vendor-item.direct-comp .competitor-dot { opacity: 1; background: #e07a7a; }
+
+  /* Tooltip / detail panel */
+  #detail-panel {
+    position: fixed;
+    right: -400px;
+    top: 0;
+    width: 360px;
+    height: 100vh;
+    background: var(--surface);
+    border-left: 1px solid var(--border-bright);
+    z-index: 100;
+    transition: right 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  #detail-panel.open { right: 0; }
+
+  .panel-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    z-index: 10;
+  }
+
+  .panel-close:hover {
+    border-color: var(--border-bright);
+    color: var(--text);
+  }
+
+  .panel-header {
+    padding: 32px 28px 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-cat-label {
+    font-size: 0.65rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .panel-vendor-name {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.7rem;
+    line-height: 1.1;
+  }
+
+  .panel-body {
+    padding: 20px 28px;
+  }
+
+  .panel-section {
+    margin-bottom: 22px;
+  }
+
+  .panel-section-title {
+    font-size: 0.65rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .panel-section p {
+    font-size: 0.82rem;
+    color: var(--muted);
+    line-height: 1.6;
+  }
+
+  .panel-section p strong {
+    color: var(--text);
+    font-weight: 600;
+  }
+
+  .panel-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 4px;
+  }
+
+  .panel-pill {
+    font-size: 0.7rem;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'DM Mono', monospace;
+  }
+
+  .panel-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.78rem;
+  }
+
+  .panel-stat:last-child { border-bottom: none; }
+
+  .panel-stat-label { color: var(--muted); }
+  .panel-stat-value { color: var(--text); font-weight: 500; }
+
+  .acadea-flag {
+    background: rgba(184, 212, 160, 0.1);
+    border: 1px solid rgba(184, 212, 160, 0.3);
+    border-radius: 6px;
+    padding: 10px 14px;
+    font-size: 0.76rem;
+    color: var(--acadea);
+    line-height: 1.5;
+    margin-bottom: 16px;
+  }
+
+  .acadea-flag strong { font-weight: 600; }
+
+  /* Integration map section */
+  .integrations-section {
+    margin-top: 32px;
+  }
+
+  .int-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+
+  .int-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    font-size: 0.76rem;
+  }
+
+  .int-card-title {
+    color: var(--accent2);
+    font-weight: 600;
+    margin-bottom: 6px;
+    font-size: 0.8rem;
+  }
+
+  .int-card p {
+    color: var(--muted);
+    line-height: 1.5;
+    font-size: 0.74rem;
+  }
+
+  .int-arrow {
+    text-align: center;
+    color: var(--muted);
+    font-size: 0.7rem;
+    margin: 4px 0;
+  }
+
+  /* Footer note */
+  .footer-bar {
+    margin: 0 56px;
+    padding: 20px 0;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 28px;
+    align-items: center;
+  }
+
+  .footer-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.72rem;
+    color: var(--muted);
+  }
+
+  .footer-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* Overlay for panel */
+  #overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    z-index: 99;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+  }
+
+  #overlay.show {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .categories-grid { grid-template-columns: repeat(2, 1fr); }
+    header, .main, .journey-bar, .footer-bar { padding-left: 28px; padding-right: 28px; }
+    .journey-bar { margin-left: 28px; margin-right: 28px; }
+    .footer-bar { margin-left: 28px; margin-right: 28px; }
+  }
+
+  @media (max-width: 700px) {
+    .categories-grid { grid-template-columns: 1fr; }
+    header { flex-direction: column; align-items: flex-start; gap: 16px; }
+    .legend { align-items: flex-start; }
+    #detail-panel { width: 100vw; }
+    .journey-steps { flex-wrap: wrap; }
+  }
+</style>
+</head>
+<body>
+
+<div id="overlay" onclick="closePanel()"></div>
+<div id="detail-panel">
+  <button class="panel-close" onclick="closePanel()">✕</button>
+  <div id="panel-content"></div>
+</div>
+
+<header>
+  <div class="header-left">
+    <h1>Higher Ed SaaS<br><em>Industry Map</em></h1>
+    <div class="header-sub">Research: March 2026 &nbsp;·&nbsp; Acadea perspective &nbsp;·&nbsp; Click any vendor to explore</div>
+  </div>
+  <div class="legend">
+    <div class="legend-title">Market maturity</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--mature)"></span> Mature &amp; stable</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--consolidating)"></span> Actively consolidating</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--emerging)"></span> Emerging / evolving</div>
+    <div style="height:8px"></div>
+    <div class="legend-row"><span class="legend-dot" style="background:#e07a7a"></span> Direct Acadea competitor</div>
+    <div class="legend-row"><span class="legend-dot" style="background:var(--acadea)"></span> Adjacent / partner territory</div>
+  </div>
+</header>
+
+<!-- Student Journey Bar -->
+<div class="journey-bar" style="margin-left:56px;margin-right:56px;margin-top:28px;">
+  <div class="journey-label">Student journey →</div>
+  <div class="journey-steps">
+    <div class="journey-step" onclick="filterByStep('Apply &amp; Enroll', this)">
+      <span class="step-icon">🎓</span>
+      <div class="step-text">
+        <div class="step-name">Apply &amp; Enroll</div>
+        <div class="step-desc">CRM, admissions, SIS onboarding</div>
+      </div>
+    </div>
+    <div class="journey-step" onclick="filterByStep('Register', this)">
+      <span class="step-icon">📋</span>
+      <div class="step-text">
+        <div class="step-name">Register</div>
+        <div class="step-desc">SIS, scheduling, course catalog</div>
+      </div>
+    </div>
+    <div class="journey-step" onclick="filterByStep('Learn', this)">
+      <span class="step-icon">📖</span>
+      <div class="step-text">
+        <div class="step-name">Learn</div>
+        <div class="step-desc">LMS delivers course content</div>
+      </div>
+    </div>
+    <div class="journey-step" onclick="filterByStep('Get Assessed', this)">
+      <span class="step-icon">📊</span>
+      <div class="step-text">
+        <div class="step-name">Get Assessed</div>
+        <div class="step-desc">Assessment tools measure outcomes</div>
+      </div>
+    </div>
+    <div class="journey-step" onclick="filterByStep('Program Review', this)">
+      <span class="step-icon">🔄</span>
+      <div class="step-text">
+        <div class="step-name">Program Review</div>
+        <div class="step-desc">Institution improves curriculum</div>
+      </div>
+    </div>
+    <div class="journey-step" onclick="filterByStep('Graduate', this)">
+      <span class="step-icon">🏛️</span>
+      <div class="step-text">
+        <div class="step-name">Graduate</div>
+        <div class="step-desc">Degree audit, records via SIS</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="integration-note">
+    <strong>How these systems connect:</strong> The <strong>SIS</strong> (Ellucian, PeopleSoft, Workday) is the campus "source of truth" — every other system integrates into it. <strong>Curriculum management</strong> tools (like Acadea) send approved course data into the SIS and catalog. The <strong>LMS</strong> pulls course lists from the SIS. <strong>Assessment</strong> tools pull outcomes data from the LMS. <strong>Scheduling</strong> tools read enrollment demand from the SIS to build class sections. The institution's accreditor sits above all of this and demands proof of outcomes — which is where <strong>program review</strong> platforms pull everything together.
+  </div>
+
+  <div class="section-label" id="section-label">Infrastructure layers — click any vendor for details</div>
+
+  <div class="categories-grid" id="cat-grid"></div>
+
+  <div class="footer-bar">
+    <div class="footer-item"><span class="footer-dot" style="background:var(--mature)"></span> Mature: established, slow-moving, large contracts, legacy tech</div>
+    <div class="footer-item"><span class="footer-dot" style="background:var(--consolidating)"></span> Consolidating: M&amp;A activity, partnerships forming, market share shifting</div>
+    <div class="footer-item"><span class="footer-dot" style="background:var(--emerging)"></span> Emerging: newer entrants, AI features, workflow modernization</div>
+  </div>
+</div>
+
+<script>
+const CATEGORIES = [
+  {
+    id: 'curriculum',
+    name: 'Curriculum Management',
+    color: 'var(--cat-curriculum)',
+    maturity: 'consolidating',
+    maturityLabel: 'Consolidating',
+    desc: 'Tools for proposing, approving, and publishing courses and programs. Manages governance workflows from faculty proposal through committee approval to catalog publication. Integrates tightly with SIS.',
+    journeySteps: ['Register', 'Program Review'],
+    integrates: ['SIS (source of truth for course data)', 'Catalog publishing systems', 'Assessment tools for outcomes mapping'],
+    trend: 'Major consolidation in 2025: Coursedog + eLumen partnership, Kuali launching full Academic Ops suite. This is the hottest category in higher ed edtech right now.',
+    vendors: [
+      {
+        name: 'Coursedog',
+        tagline: 'Integrated academic ops platform',
+        tags: ['300+ institutions', 'VC-backed', 'NY'],
+        directComp: true,
+        detail: {
+          overview: 'Founded by Columbia CS students. Positioned as an all-in-one academic operations platform — curriculum, catalog, scheduling, and analytics in one product. Growing fast.',
+          stats: [
+            { label: 'Institutions', value: '300+' },
+            { label: 'Headquarters', value: 'New York, NY' },
+            { label: 'Funding', value: 'VC-backed' },
+            { label: 'Key move (2025)', value: 'Exclusive partnership with eLumen' },
+          ],
+          strengths: 'Strong scheduling module alongside curriculum — rare combination. Modern UX. Course demand analytics are best-in-class.',
+          weaknesses: 'Newer than CourseLeaf and Acadea. Less depth in CA community college governance nuances.',
+          acadea: 'Direct competitor across most deals. Often comes up in same evaluations. The eLumen partnership makes them stronger in CA community colleges — Acadea\'s home turf.',
+          categories: ['Curriculum Management', 'Scheduling']
+        }
+      },
+      {
+        name: 'CourseLeaf',
+        tagline: 'CIM — Leepfrog Technologies',
+        tags: ['300+ campuses', 'incumbent', 'deep SIS'],
+        directComp: true,
+        detail: {
+          overview: 'Long-standing incumbent in curriculum management. CIM (Curriculum Inventory Management) is their flagship product. Known for deep SIS integration, especially with Ellucian Banner.',
+          stats: [
+            { label: 'Institutions', value: '300+' },
+            { label: 'Parent co.', value: 'Leepfrog Technologies' },
+            { label: 'Maturity', value: 'Established incumbent' },
+            { label: 'Key strength', value: 'Banner/SIS integration depth' },
+          ],
+          strengths: 'Trusted brand, deep SIS integrations, large install base. Faculty at many schools already know it.',
+          weaknesses: 'Older UX. Less innovation compared to newer entrants. Can be slow to adapt.',
+          acadea: 'Direct competitor. Often in the same deals. CourseLeaf tends to win on brand recognition; Acadea tends to win on flexibility and partnership approach.',
+          categories: ['Curriculum Management']
+        }
+      },
+      {
+        name: 'Kuali',
+        tagline: 'Kuali Academic Ops suite',
+        tags: ['20yr history', 'curriculum + catalog + scheduling'],
+        directComp: true,
+        detail: {
+          overview: 'Twenty-year higher ed software company. Launched Kuali Academic Ops in March 2025 — their first fully integrated suite combining curriculum, catalog, syllabus, scheduling (via Ad Astra partnership), and workflow automation.',
+          stats: [
+            { label: 'Founded', value: '~2005' },
+            { label: 'Headquarters', value: 'Lehi, Utah' },
+            { label: 'Key launch (2025)', value: 'Kuali Academic Ops suite' },
+            { label: 'Partner', value: 'Ad Astra (scheduling)' },
+          ],
+          strengths: 'Deep higher ed roots. Broad product suite. Strong curriculum and catalog tools. Ad Astra partnership adds scheduling muscle.',
+          weaknesses: 'Suite approach means trade-offs in depth. Less CA community college focus than Acadea or eLumen.',
+          acadea: 'Competitor, but mostly at 4-year and research universities. Less overlap in the CA community college space where Acadea is strongest.',
+          categories: ['Curriculum Management', 'Scheduling']
+        }
+      },
+      {
+        name: 'eLumen',
+        tagline: 'Canvas-native curriculum & outcomes',
+        tags: ['100+ institutions', 'Canvas partner', 'CA community colleges'],
+        directComp: true,
+        detail: {
+          overview: 'Minneapolis-based platform deeply embedded in the Canvas LMS ecosystem. Strong in CA community colleges for outcomes assessment and curriculum. Chose Coursedog as exclusive curriculum/catalog partner in April 2025 — a pivot away from standalone curriculum management.',
+          stats: [
+            { label: 'Institutions', value: '100+' },
+            { label: 'Key partnership', value: 'Coursedog (exclusive, 2025)' },
+            { label: 'LMS ecosystem', value: 'Canvas / Instructure' },
+            { label: 'Focus', value: 'Outcomes, accreditation, CA CCC' },
+          ],
+          strengths: 'Native Canvas integration. Very strong outcomes assessment. Deep relationships in CA community college system.',
+          weaknesses: 'Pivoting curriculum/catalog customers to Coursedog — shrinking their own curriculum footprint.',
+          acadea: 'Was a direct curriculum competitor. The Coursedog partnership changes the dynamic — eLumen is now essentially referring curriculum work to Coursedog, which could create displacement opportunities for Acadea.',
+          categories: ['Curriculum Management', 'Assessment', 'Program Review']
+        }
+      }
+    ]
+  },
+  {
+    id: 'assessment',
+    name: 'Assessment',
+    color: 'var(--cat-assessment)',
+    maturity: 'mature',
+    maturityLabel: 'Mature',
+    desc: 'Platforms for measuring student learning outcomes, mapping them to program and institutional goals, and reporting results to accreditors. Feeds directly into program review cycles.',
+    journeySteps: ['Get Assessed'],
+    integrates: ['LMS (pulls outcome/grade data)', 'Program review platforms', 'SIS (student records)'],
+    trend: 'Watermark dominates with 1,700+ institutions. eLumen is the Canvas-native alternative. Anthology/Blackboard bundles assessment inside its campus suite play.',
+    vendors: [
+      {
+        name: 'Watermark',
+        tagline: 'Educational Impact Suite',
+        tags: ['1,700+ institutions', '#1 on G2', 'accreditation'],
+        directComp: false,
+        detail: {
+          overview: 'The dominant player in higher ed assessment and accreditation. Their Educational Impact Suite covers assessment, accreditation self-studies, faculty activity reporting, course evaluations, and student success. Partners with 60%+ of SACSCOC institutions.',
+          stats: [
+            { label: 'Institutions', value: '1,700+' },
+            { label: 'G2 ranking', value: '#1 in category' },
+            { label: 'SACSCOC coverage', value: '60%+ of member institutions' },
+            { label: 'HLC coverage', value: '440+ institutions' },
+          ],
+          strengths: 'Massive market share. Full suite: assessment, program review, faculty activity, course feedback. Deep accreditor partnerships.',
+          weaknesses: 'Can be expensive. Some users report steep learning curve for setup.',
+          acadea: 'Adjacent, not direct competitor. Acadea\'s curriculum management feeds data that Watermark\'s assessment tools then use. A potential integration partnership angle.',
+          categories: ['Assessment', 'Program Review']
+        }
+      },
+      {
+        name: 'eLumen',
+        tagline: 'Outcomes assessment & mapping',
+        tags: ['Canvas-native', 'program review', 'CA community colleges'],
+        directComp: false,
+        detail: {
+          overview: 'Canvas-embedded outcomes assessment platform. Strong in CA community colleges. Provides curriculum mapping, learning outcome assessment, and program review tools that tie directly into accreditation reporting.',
+          stats: [
+            { label: 'Institutions', value: '100+' },
+            { label: 'Ecosystem', value: 'Canvas / Instructure' },
+            { label: 'Focus', value: 'SLO assessment, program review' },
+          ],
+          strengths: 'Seamless Canvas integration. Strong accreditation workflow tools. Well-known in CA community college system.',
+          weaknesses: 'Smaller than Watermark. Pivoting curriculum customers to Coursedog.',
+          acadea: 'Adjacent. Acadea produces curriculum; eLumen assesses outcomes from that curriculum. Natural complement — possible integration story.',
+          categories: ['Curriculum Management', 'Assessment', 'Program Review']
+        }
+      },
+      {
+        name: 'Blackboard (Anthology)',
+        tagline: 'Campus Labs assessment tools',
+        tags: ['formerly Campus Labs', 'campus suite', 'AI features'],
+        directComp: false,
+        detail: {
+          overview: 'Anthology acquired Campus Labs, which had long-standing assessment and accreditation tools. Now bundled into the broader Anthology campus suite alongside Blackboard LMS and Anthology Student (SIS).',
+          stats: [
+            { label: 'Parent company', value: 'Anthology' },
+            { label: 'Previous brand', value: 'Campus Labs' },
+            { label: 'Strategy', value: 'Unified campus suite (LMS + SIS + assessment)' },
+          ],
+          strengths: 'Bundled with LMS and SIS — easy sell to existing Blackboard/Anthology customers. AI features being added across suite.',
+          weaknesses: 'Assessment tools seen as weaker standalone vs Watermark or eLumen. Suite bundling can mean less depth.',
+          acadea: 'Minimal direct overlap. Blackboard/Anthology targets institutions already in their ecosystem.',
+          categories: ['Assessment', 'Program Review', 'SIS', 'LMS']
+        }
+      }
+    ]
+  },
+  {
+    id: 'programreview',
+    name: 'Program Review',
+    color: 'var(--cat-program)',
+    maturity: 'consolidating',
+    maturityLabel: 'Consolidating',
+    desc: 'Manages the cyclical process by which academic departments evaluate their programs — collecting data, writing self-studies, setting goals, and demonstrating improvement to accreditors.',
+    journeySteps: ['Program Review'],
+    integrates: ['Assessment platforms (outcome data flows in)', 'SIS (enrollment/completion data)', 'Accreditation body reporting portals'],
+    trend: 'Blurring with assessment — Watermark dominates both. eLumen strong in CA community colleges. Anthology bundles it into its suite.',
+    vendors: [
+      {
+        name: 'Watermark',
+        tagline: 'Planning & Self-Study',
+        tags: ['program review hub', 'accreditation', 'strategic planning'],
+        directComp: false,
+        detail: {
+          overview: 'Watermark\'s Planning & Self-Study product is the most widely used program review and accreditation platform in US higher ed. Institutions use it for ongoing assessment cycles, accreditation self-studies, and strategic planning.',
+          stats: [
+            { label: 'Product', value: 'Planning & Self-Study' },
+            { label: 'Scope', value: 'Program review + accreditation + strategic planning' },
+            { label: 'Coverage', value: '45%+ of Middle States institutions' },
+          ],
+          strengths: 'Flexible templates. Year-over-year comparison tools. Strong accreditor-specific templates (HLC, SACSCOC, Middle States, NWCCU).',
+          weaknesses: 'Setup complexity noted by users. Learning curve.',
+          acadea: 'Adjacent. Acadea\'s curriculum management is upstream of program review — institutions using both would integrate the two.',
+          categories: ['Assessment', 'Program Review']
+        }
+      },
+      {
+        name: 'eLumen',
+        tagline: 'Program review & accreditation',
+        tags: ['Canvas-embedded', 'configurable', 'CA community colleges'],
+        directComp: false,
+        detail: {
+          overview: 'eLumen\'s program review module allows institutions to design report templates, manage review workflows, and pull in live assessment and outcome data. Strong in CA community college guided pathways work.',
+          stats: [
+            { label: 'Key integration', value: 'Canvas LMS (native)' },
+            { label: 'Specialty', value: 'Guided Pathways, CA community colleges' },
+          ],
+          strengths: 'Assessment data flows seamlessly into program review reports. Canvas-native. Strong in CA.',
+          weaknesses: 'Smaller install base than Watermark for program review specifically.',
+          acadea: 'Complementary. Acadea curriculum → eLumen program review is a natural workflow at CA community colleges.',
+          categories: ['Curriculum Management', 'Assessment', 'Program Review']
+        }
+      },
+      {
+        name: 'Blackboard (Anthology)',
+        tagline: 'Formerly Campus Labs',
+        tags: ['suite bundle', 'campus-wide'],
+        directComp: false,
+        detail: {
+          overview: 'Campus Labs — now Anthology — offered program review as part of its institutional effectiveness suite. Now rolled into the broader Anthology campus platform.',
+          stats: [
+            { label: 'Parent company', value: 'Anthology' },
+            { label: 'Strategy', value: 'Bundled with LMS/SIS for existing customers' },
+          ],
+          strengths: 'Easy sell to Blackboard/Anthology LMS and SIS customers.',
+          weaknesses: 'Less specialized than Watermark or eLumen for program review specifically.',
+          acadea: 'Minimal overlap.',
+          categories: ['Assessment', 'Program Review', 'SIS', 'LMS']
+        }
+      }
+    ]
+  },
+  {
+    id: 'scheduling',
+    name: 'Scheduling',
+    color: 'var(--cat-scheduling)',
+    maturity: 'consolidating',
+    maturityLabel: 'Consolidating',
+    desc: 'Academic and room scheduling platforms that optimize when and where courses are offered. Use enrollment demand data from SIS to build class sections, maximize room utilization, and improve student access.',
+    journeySteps: ['Register'],
+    integrates: ['SIS (enrollment demand data)', 'Curriculum management (approved course data)', 'Facilities/room management systems'],
+    trend: 'Kuali + Ad Astra partnership (March 2025) is reshaping this category. Coursedog\'s bundled scheduling is the key differentiator in curriculum-first deals.',
+    vendors: [
+      {
+        name: 'Ad Astra',
+        tagline: 'Academic & room scheduling',
+        tags: ['scheduling specialist', 'data-driven', 'Kuali partner'],
+        directComp: false,
+        detail: {
+          overview: 'The dominant dedicated academic scheduling platform. Decades of experience helping institutions build student-centric, room-optimized class schedules. Announced a strategic partnership with Kuali in March 2025.',
+          stats: [
+            { label: 'Focus', value: 'Pure-play academic scheduling' },
+            { label: 'CEO', value: 'Tom Shaver' },
+            { label: 'Key partnership', value: 'Kuali (March 2025)' },
+            { label: 'Headquarters', value: 'Overland Park, KS' },
+          ],
+          strengths: 'Deep scheduling expertise. Best-in-class optimization algorithms. Integrates with all major SIS platforms.',
+          weaknesses: 'Point solution — needs to integrate with curriculum and catalog tools separately.',
+          acadea: 'No direct overlap. Ad Astra operates downstream of curriculum — they take approved courses and schedule them. Acadea is upstream.',
+          categories: ['Scheduling']
+        }
+      },
+      {
+        name: 'Coursedog',
+        tagline: 'Course demand analytics + scheduling',
+        tags: ['bundled', 'course demand', 'projections'],
+        directComp: true,
+        detail: {
+          overview: 'Coursedog\'s scheduling module is embedded in the same platform as curriculum and catalog — this bundling is a key competitive differentiator. Also provides course demand analytics and projection tools.',
+          stats: [
+            { label: 'Approach', value: 'Bundled with curriculum & catalog' },
+            { label: 'Key feature', value: 'Course demand projections' },
+          ],
+          strengths: 'Single platform for curriculum + scheduling removes integration complexity. Course demand analytics help institutions build data-driven schedules.',
+          weaknesses: 'Scheduling depth may not match Ad Astra\'s specialized tools.',
+          acadea: 'Indirect competition — Coursedog\'s scheduling bundle is a reason some deals go their way over Acadea + a separate scheduling tool.',
+          categories: ['Curriculum Management', 'Scheduling']
+        }
+      },
+      {
+        name: 'Kuali',
+        tagline: 'Powered by Ad Astra partnership',
+        tags: ['Academic Ops suite', 'integrated', '2025 launch'],
+        directComp: true,
+        detail: {
+          overview: 'Kuali\'s scheduling capability is now powered by a deep partnership with Ad Astra, launched as part of Kuali Academic Ops in 2025. Curriculum and catalog data from Kuali flows automatically into Ad Astra\'s scheduling engine.',
+          stats: [
+            { label: 'Launch', value: 'March 2025' },
+            { label: 'Powered by', value: 'Ad Astra integration' },
+            { label: 'Suite', value: 'Kuali Academic Ops' },
+          ],
+          strengths: 'Best-in-class scheduling (Ad Astra engine) connected to strong curriculum/catalog tools. Integrated data flow.',
+          weaknesses: 'New offering — less proven than Ad Astra standalone.',
+          acadea: 'Competitor in curriculum; the scheduling add-on strengthens Kuali\'s overall proposition vs Acadea.',
+          categories: ['Curriculum Management', 'Scheduling']
+        }
+      }
+    ]
+  },
+  {
+    id: 'sis',
+    name: 'SIS',
+    color: 'var(--cat-sis)',
+    maturity: 'mature',
+    maturityLabel: 'Mature & stable',
+    desc: 'Student Information Systems are the core administrative backbone of a college or university — managing student records, registration, financial aid, billing, degree auditing, and compliance. Every other platform integrates with the SIS.',
+    journeySteps: ['Apply & Enroll', 'Register', 'Graduate'],
+    integrates: ['All other categories integrate INTO the SIS', 'Financial systems', 'Financial aid (FAFSA, etc.)'],
+    trend: 'Dominated by legacy giants. Workday Student is the main cloud-native challenger. Ellucian is AI-enabling its platform. Very sticky — switching SIS is a multi-year, multi-million dollar project.',
+    vendors: [
+      {
+        name: 'Ellucian',
+        tagline: 'Banner & Colleague — the market leader',
+        tags: ['most-installed US', 'Banner', 'Colleague', 'AI roadmap'],
+        directComp: false,
+        detail: {
+          overview: 'The dominant SIS vendor in US higher education. Banner (for larger institutions) and Colleague (for smaller) are the most widely installed SIS products in the country. Ellucian is transitioning to an AI-augmented SaaS platform.',
+          stats: [
+            { label: 'Products', value: 'Banner, Colleague, PowerCampus' },
+            { label: 'Market position', value: 'Most-installed US higher ed SIS' },
+            { label: 'Headquarters', value: 'Reston, VA' },
+            { label: 'Strategy', value: 'AI SaaS platform unifying SIS, ERP, CRM' },
+          ],
+          strengths: 'Dominant install base. Deep institutional knowledge baked in. Most curriculum management tools (including Acadea) have pre-built Ellucian integrations.',
+          weaknesses: 'Legacy tech debt. Expensive. Banner UI is notoriously complex.',
+          acadea: 'Critical integration partner — the majority of Acadea\'s customers likely run on Ellucian Banner or Colleague. Strong integration = competitive advantage for Acadea.',
+          categories: ['SIS']
+        }
+      },
+      {
+        name: 'Oracle PeopleSoft',
+        tagline: 'Campus Solutions / Oracle Student Cloud',
+        tags: ['large research universities', 'enterprise', 'legacy'],
+        directComp: false,
+        detail: {
+          overview: 'PeopleSoft Campus Solutions is the traditional on-premise SIS used at many large research universities. Oracle Student Cloud is the modern SaaS successor. Common at flagship state universities.',
+          stats: [
+            { label: 'On-prem product', value: 'Campus Solutions' },
+            { label: 'Cloud product', value: 'Oracle Student Cloud' },
+            { label: 'Typical customer', value: 'Large research universities' },
+          ],
+          strengths: 'Robust analytics. Enterprise-grade scalability. Deep Oracle ERP integration.',
+          weaknesses: 'Complex implementation. Expensive. PeopleSoft is aging tech.',
+          acadea: 'Acadea integrates with PeopleSoft at some institutions. Less common than Ellucian in Acadea\'s CA community college base.',
+          categories: ['SIS']
+        }
+      },
+      {
+        name: 'Workday Student',
+        tagline: 'Cloud-native SIS challenger',
+        tags: ['cloud-native', 'HCM integration', 'growing install base'],
+        directComp: false,
+        detail: {
+          overview: 'Workday entered higher ed SIS as a cloud-native alternative to the legacy incumbents. Growing install base, especially at institutions already using Workday HCM (HR) and Finance.',
+          stats: [
+            { label: 'Architecture', value: 'Cloud-native SaaS' },
+            { label: 'Key advantage', value: 'Unified Workday HCM + Finance + Student' },
+            { label: 'Growth', value: 'Expanding install base' },
+          ],
+          strengths: 'Modern architecture. Unified with HR and finance. Good UX.',
+          weaknesses: 'Newer to market. Fewer pre-built integrations with best-of-breed edtech tools vs Ellucian.',
+          acadea: 'Smaller overlap today, but growing. Acadea should ensure Workday Student integration is strong as it gains share.',
+          categories: ['SIS']
+        }
+      },
+      {
+        name: 'Jenzabar',
+        tagline: 'Jenzabar One / SONIS',
+        tags: ['small/private colleges', 'SONIS for specialty schools'],
+        directComp: false,
+        detail: {
+          overview: 'Jenzabar targets smaller, private, and specialty institutions. Jenzabar One for small-to-mid private colleges; SONIS for smaller specialty schools. Positioned as a cost-effective SIS.',
+          stats: [
+            { label: 'Products', value: 'Jenzabar One, SONIS' },
+            { label: 'Target market', value: 'Small/mid-size private colleges' },
+            { label: 'Positioning', value: 'Cost-effective alternative to Ellucian' },
+          ],
+          strengths: 'Lower cost. Purpose-built for smaller institutions. Good for schools that don\'t need enterprise-scale SIS.',
+          weaknesses: 'Smaller ecosystem of integrations vs Ellucian.',
+          acadea: 'Some Acadea customers may run Jenzabar. Worth having a solid integration story.',
+          categories: ['SIS']
+        }
+      },
+      {
+        name: 'Blackboard (Anthology)',
+        tagline: 'Anthology Student — part of campus suite',
+        tags: ['formerly Campus Mgmt', 'suite play', 'AI features'],
+        directComp: false,
+        detail: {
+          overview: 'Anthology Student (formerly Campus Management) is Anthology\'s SIS, bundled with Blackboard LMS, assessment tools, and CRM. The strategy is to own the full campus stack for existing Blackboard customers.',
+          stats: [
+            { label: 'Parent company', value: 'Anthology' },
+            { label: 'Previous brand', value: 'Campus Management' },
+            { label: 'Strategy', value: 'Full campus suite: LMS + SIS + assessment + CRM' },
+          ],
+          strengths: 'Compelling bundle for Blackboard LMS customers. AI features being added across suite.',
+          weaknesses: 'SIS is not a market leader. Best as a bundle, not standalone.',
+          acadea: 'Low overlap. Anthology\'s integrated suite approach is the opposite of Acadea\'s best-of-breed philosophy.',
+          categories: ['Assessment', 'Program Review', 'SIS', 'LMS']
+        }
+      }
+    ]
+  },
+  {
+    id: 'lms',
+    name: 'LMS',
+    color: 'var(--cat-lms)',
+    maturity: 'mature',
+    maturityLabel: 'Mature & stable',
+    desc: 'Learning Management Systems are the digital classroom — where course content lives, assignments are submitted, grades are recorded, and students and faculty interact. Every student touches the LMS every day.',
+    journeySteps: ['Learn', 'Get Assessed'],
+    integrates: ['SIS (course roster/enrollment data)', 'Assessment platforms (outcome data export)', 'Curriculum management (course info)'],
+    trend: 'Canvas has taken dominant US share. Moodle owns globally. Blackboard is legacy. D2L is strong internationally. AI content authoring is the current battleground.',
+    vendors: [
+      {
+        name: 'Canvas (Instructure)',
+        tagline: 'US higher ed LMS market leader',
+        tags: ['dominant US share', 'Canvas Credentials', 'eLumen partner'],
+        directComp: false,
+        detail: {
+          overview: 'The dominant LMS in US higher education. Instructure (Canvas) has taken significant market share from Blackboard over the past decade. Also owns Canvas Credentials (digital badges/credentials). eLumen\'s outcomes platform is a native Canvas partner.',
+          stats: [
+            { label: 'Market position', value: 'US higher ed LMS market leader' },
+            { label: 'Key ecosystem', value: 'Canvas Credentials, eLumen partnership' },
+            { label: 'Headquarters', value: 'Salt Lake City, UT' },
+          ],
+          strengths: 'Modern UX. Large partner ecosystem. Canvas is where eLumen\'s outcomes tools live — relevant for Acadea customers who also use eLumen.',
+          weaknesses: 'Less of a full "campus suite" than Anthology.',
+          acadea: 'Important context: most CA community colleges using eLumen are on Canvas. This means Acadea → eLumen → Canvas is a common stack in Acadea\'s key market.',
+          categories: ['LMS']
+        }
+      },
+      {
+        name: 'Blackboard (Anthology)',
+        tagline: 'Legacy LMS + AI campus suite',
+        tags: ['large legacy install base', 'Anthology suite', 'AI authoring'],
+        directComp: false,
+        detail: {
+          overview: 'Blackboard was the dominant LMS for two decades. Now rebranded/integrated under Anthology, it\'s adding AI authoring tools and converging with SIS, assessment, and CRM into a unified campus suite.',
+          stats: [
+            { label: 'Parent company', value: 'Anthology' },
+            { label: 'AI features', value: 'AI design assistant, content authoring, chatbots' },
+            { label: 'Strategy', value: 'Full campus suite convergence' },
+          ],
+          strengths: 'Still large install base. Bundled suite is compelling for institutions wanting one vendor. AI features accelerating.',
+          weaknesses: 'UX seen as dated vs Canvas. Negative brand associations from Blackboard era.',
+          acadea: 'Low direct overlap. Anthology\'s suite strategy (own everything) is a philosophical competitor to best-of-breed tools like Acadea.',
+          categories: ['Assessment', 'Program Review', 'SIS', 'LMS']
+        }
+      },
+      {
+        name: 'Brightspace (D2L)',
+        tagline: 'Strong in Canada & internationally',
+        tags: ['$100-250M revenue', 'personalized learning', 'global'],
+        directComp: false,
+        detail: {
+          overview: 'D2L\'s Brightspace LMS is strong in Canada, Australia, and international markets. Known for personalized learning features. Growing revenue ($100M–$250M range).',
+          stats: [
+            { label: 'Revenue', value: '$100M–$250M' },
+            { label: 'Key markets', value: 'Canada, Australia, international' },
+            { label: 'Differentiation', value: 'Personalized learning features' },
+          ],
+          strengths: 'Strong analytics. Good personalization. Less Blackboard-shadow than US competitors.',
+          weaknesses: 'Smaller US higher ed share vs Canvas or Blackboard.',
+          acadea: 'Minimal overlap. Brightspace is mostly outside Acadea\'s CA community college core market.',
+          categories: ['LMS']
+        }
+      },
+      {
+        name: 'Moodle',
+        tagline: 'Open-source, largest global install base',
+        tags: ['open source', 'global #1', 'managed hosting'],
+        directComp: false,
+        detail: {
+          overview: 'Moodle is the world\'s most-installed LMS by volume, dominant outside North America. Open-source core with many managed hosting providers (MoodleCloud, Moodlerooms, etc.). Very popular in Europe, Latin America, and Asia.',
+          stats: [
+            { label: 'License', value: 'Open source (GPL)' },
+            { label: 'Global position', value: 'Largest install base worldwide' },
+            { label: 'US higher ed', value: 'Smaller share vs Canvas/Blackboard' },
+          ],
+          strengths: 'Free/low cost. Extremely customizable. Massive global community.',
+          weaknesses: 'Requires IT resources to manage. UX varies by instance. Less polished than commercial alternatives.',
+          acadea: 'Low overlap in US higher ed. Moodle is less common in CA community colleges.',
+          categories: ['LMS']
+        }
+      }
+    ]
+  }
+];
+
+function getMaturityClass(m) {
+  if (m === 'mature') return 'maturity-mature';
+  if (m === 'consolidating') return 'maturity-consolidating';
+  return 'maturity-emerging';
+}
+
+// Journey step → category mapping
+const JOURNEY_MAP = {
+  'Apply & Enroll': ['sis'],
+  'Register':       ['sis', 'scheduling', 'curriculum'],
+  'Learn':          ['lms'],
+  'Get Assessed':   ['lms', 'assessment'],
+  'Program Review': ['programreview', 'assessment', 'curriculum'],
+  'Graduate':       ['sis']
+};
+
+let activeStep = null;
+
+function filterByStep(stepName, el) {
+  const steps = document.querySelectorAll('.journey-step');
+
+  // Toggle off if already active
+  if (activeStep === stepName) {
+    activeStep = null;
+    steps.forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.cat-card').forEach(c => {
+      c.classList.remove('dimmed', 'highlighted');
+    });
+    document.getElementById('section-label').textContent = 'Infrastructure layers — click any vendor for details';
+    return;
+  }
+
+  activeStep = stepName;
+
+  // Update step highlight
+  steps.forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+
+  // Highlight/dim cards
+  const relevant = JOURNEY_MAP[stepName] || [];
+  document.querySelectorAll('.cat-card').forEach(card => {
+    const id = card.getAttribute('data-id');
+    if (relevant.includes(id)) {
+      card.classList.remove('dimmed');
+      card.classList.add('highlighted');
+      card.style.pointerEvents = '';
+    } else {
+      card.classList.add('dimmed');
+      card.classList.remove('highlighted');
+    }
+  });
+
+  document.getElementById('section-label').textContent =
+    `Showing layers active during: "${stepName}" — click step again to reset`;
+}
+
+function renderCategories() {
+  const grid = document.getElementById('cat-grid');
+  grid.innerHTML = CATEGORIES.map(cat => `
+    <div class="cat-card" data-id="${cat.id}">
+      <div class="cat-header">
+        <div class="cat-name" style="color:${cat.color}">${cat.name}</div>
+        <div class="cat-meta">
+          <span class="maturity-badge ${getMaturityClass(cat.maturity)}">${cat.maturityLabel}</span>
+        </div>
+      </div>
+      <div class="cat-desc">${cat.desc}</div>
+      <div class="vendor-list">
+        ${cat.vendors.map(v => `
+          <div class="vendor-item ${v.directComp ? 'direct-comp' : ''}" onclick="openPanel(${JSON.stringify(cat.id).replace(/"/g, '&quot;')}, ${JSON.stringify(v.name).replace(/"/g, '&quot;')})">
+            <div class="vendor-left">
+              <div class="vendor-color-bar" style="background:${cat.color}${v.directComp ? '' : '66'}"></div>
+              <div class="vendor-name-wrap">
+                <div class="vendor-name">${v.name}</div>
+                <div class="vendor-tagline">${v.tagline}</div>
+              </div>
+            </div>
+            <div class="vendor-tags">
+              ${v.directComp ? '<span class="vtag highlight">⚡ direct comp</span>' : ''}
+              ${v.tags.slice(0,1).map(t => `<span class="vtag">${t}</span>`).join('')}
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function openPanel(catId, vendorName) {
+  const cat = CATEGORIES.find(c => c.id === catId);
+  const vendor = cat.vendors.find(v => v.name === vendorName);
+  const d = vendor.detail;
+
+  const allCats = vendor.detail.categories || [cat.name];
+
+  document.getElementById('panel-content').innerHTML = `
+    <div class="panel-header">
+      <div class="panel-cat-label">${allCats.join(' · ')}</div>
+      <div class="panel-vendor-name" style="color:${cat.color}">${vendor.name}</div>
+      <div style="font-size:0.78rem;color:var(--muted);margin-top:4px">${vendor.tagline}</div>
+    </div>
+    <div class="panel-body">
+      ${vendor.directComp ? `<div class="acadea-flag"><strong>⚡ Direct Acadea competitor</strong> — appears in the same deals and evaluations.</div>` : ''}
+
+      <div class="panel-section">
+        <div class="panel-section-title">Overview</div>
+        <p>${d.overview}</p>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-section-title">Key facts</div>
+        ${d.stats.map(s => `<div class="panel-stat"><span class="panel-stat-label">${s.label}</span><span class="panel-stat-value">${s.value}</span></div>`).join('')}
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-section-title">Strengths</div>
+        <p>${d.strengths}</p>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-section-title">Weaknesses</div>
+        <p>${d.weaknesses}</p>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-section-title">Relevance to Acadea</div>
+        <p>${d.acadea}</p>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-section-title">Category trend</div>
+        <p>${cat.trend}</p>
+      </div>
+
+      <div class="panel-section">
+        <div class="panel-section-title">Integrates with</div>
+        <div class="panel-pills">
+          ${cat.integrates.map(i => `<span class="panel-pill">${i}</span>`).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+
+  document.getElementById('detail-panel').classList.add('open');
+  document.getElementById('overlay').classList.add('show');
+}
+
+function closePanel() {
+  document.getElementById('detail-panel').classList.remove('open');
+  document.getElementById('overlay').classList.remove('show');
+}
+
+renderCategories();
+</script>
+</body>
+</html>
